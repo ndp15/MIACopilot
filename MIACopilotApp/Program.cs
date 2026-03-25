@@ -20,7 +20,8 @@ namespace MIACopilotApp
                 Console.WriteLine("3. Berufsbildner verwalten");
                 Console.WriteLine("4. Arbeitsjournale verwalten");
                 Console.WriteLine("5. Beenden");
-                Console.Write("Bitte waehlen Sie eine Option (1-5): ");
+                Console.WriteLine("6. Suchen & Filtern");
+                Console.Write("Bitte wählen Sie eine Option (1-6): ");
 
                 string? input = Console.ReadLine();
 
@@ -42,8 +43,11 @@ namespace MIACopilotApp
                         running = false;
                         Console.WriteLine("Programm wird beendet.");
                         break;
+                    case "6":
+                        SearchAndFilter();
+                        break;
                     default:
-                        Console.WriteLine("Ungueltige Eingabe. Bitte versuchen Sie es erneut.");
+                        Console.WriteLine("Ungültige Eingabe. Bitte versuchen Sie es erneut.");
                         break;
                 }
             }
@@ -61,7 +65,7 @@ namespace MIACopilotApp
                 {
                     return result;
                 }
-                Console.WriteLine("Ungueltige Eingabe. Bitte geben Sie eine Zahl ein.");
+                Console.WriteLine("Ungültige Eingabe. Bitte geben Sie eine Zahl ein.");
             }
         }
 
@@ -72,7 +76,7 @@ namespace MIACopilotApp
             string? input = Console.ReadLine();
             if (string.IsNullOrWhiteSpace(input)) return null;
             if (int.TryParse(input, out int result)) return result;
-            Console.WriteLine("Ungueltige Eingabe. Wert wird als leer gespeichert.");
+            Console.WriteLine("Ungültige Eingabe. Wert wird als leer gespeichert.");
             return null;
         }
 
@@ -88,7 +92,7 @@ namespace MIACopilotApp
                 {
                     return result;
                 }
-                Console.WriteLine("Ungueltige Eingabe. Bitte geben Sie ein gueltiges Datum ein.");
+                Console.WriteLine("Ungültige Eingabe. Bitte geben Sie ein gültiges Datum ein.");
             }
         }
 
@@ -100,10 +104,10 @@ namespace MIACopilotApp
             {
                 Console.WriteLine("\n-- Lernende verwalten --");
                 Console.WriteLine("1. Alle anzeigen");
-                Console.WriteLine("2. Hinzufuegen");
+                Console.WriteLine("2. Hinzufügen");
                 Console.WriteLine("3. Bearbeiten");
-                Console.WriteLine("4. Loeschen");
-                Console.WriteLine("5. Zurueck zum Hauptmenue");
+                Console.WriteLine("4. Löschen");
+                Console.WriteLine("5. Zurück zum Hauptmenü");
                 Console.Write("Option: ");
                 string? input = Console.ReadLine();
 
@@ -125,7 +129,7 @@ namespace MIACopilotApp
                         back = true;
                         break;
                     default:
-                        Console.WriteLine("Ungueltige Eingabe.");
+                        Console.WriteLine("Ungültige Eingabe.");
                         break;
                 }
             }
@@ -153,8 +157,8 @@ namespace MIACopilotApp
             string firstName = Console.ReadLine() ?? string.Empty;
             Console.Write("Nachname: ");
             string lastName = Console.ReadLine() ?? string.Empty;
-            int? companyId = ReadOptionalInt("Firma ID (leer fuer keine): ");
-            int? trainerId = ReadOptionalInt("Berufsbildner ID (leer fuer keine): ");
+            int? companyId = ReadOptionalInt("Firma ID (leer für keine): ");
+            int? trainerId = ReadOptionalInt("Berufsbildner ID (leer für keine): ");
 
             var apprentice = new Apprentice 
             { 
@@ -164,7 +168,7 @@ namespace MIACopilotApp
                 VocationalTrainerId = trainerId
             };
             Apprentice.Create(apprentice);
-            Console.WriteLine("Lernender erfolgreich hinzugefuegt.");
+            Console.WriteLine("Lernender erfolgreich hinzugefügt.");
         }
 
         // Updates an existing apprentice
@@ -199,9 +203,9 @@ namespace MIACopilotApp
         // Deletes an apprentice
         static void DeleteApprentice()
         {
-            int id = ReadInt("ID des zu loeschenden Lernenden: ");
+            int id = ReadInt("ID des zu Löschenden Lernenden: ");
             Apprentice.Delete(id);
-            Console.WriteLine("Lernender (falls vorhanden) geloescht.");
+            Console.WriteLine("Lernender (falls vorhanden) gelöscht.");
         }
 
         // Manages the company operations (CRUD)
@@ -212,10 +216,10 @@ namespace MIACopilotApp
             {
                 Console.WriteLine("\n-- Firmen verwalten --");
                 Console.WriteLine("1. Alle anzeigen");
-                Console.WriteLine("2. Hinzufuegen");
+                Console.WriteLine("2. Hinzufügen");
                 Console.WriteLine("3. Bearbeiten");
-                Console.WriteLine("4. Loeschen");
-                Console.WriteLine("5. Zurueck zum Hauptmenue");
+                Console.WriteLine("4. Löschen");
+                Console.WriteLine("5. Zurück zum Hauptmenü");
                 Console.Write("Option: ");
                 string? input = Console.ReadLine();
 
@@ -237,7 +241,7 @@ namespace MIACopilotApp
                         back = true;
                         break;
                     default:
-                        Console.WriteLine("Ungueltige Eingabe.");
+                        Console.WriteLine("Ungültige Eingabe.");
                         break;
                 }
             }
@@ -268,7 +272,7 @@ namespace MIACopilotApp
 
             var company = new Company { Name = name, Address = address };
             Company.Create(company);
-            Console.WriteLine("Firma erfolgreich hinzugefuegt.");
+            Console.WriteLine("Firma erfolgreich hinzugefügt.");
         }
 
         // Updates an existing company
@@ -297,9 +301,9 @@ namespace MIACopilotApp
         // Deletes a company
         static void DeleteCompany()
         {
-            int id = ReadInt("ID der zu loeschenden Firma: ");
+            int id = ReadInt("ID der zu Löschenden Firma: ");
             Company.Delete(id);
-            Console.WriteLine("Firma (falls vorhanden) geloescht.");
+            Console.WriteLine("Firma (falls vorhanden) gelöscht.");
         }
 
         // Manages the vocational trainer operations (CRUD)
@@ -310,10 +314,10 @@ namespace MIACopilotApp
             {
                 Console.WriteLine("\n-- Berufsbildner verwalten --");
                 Console.WriteLine("1. Alle anzeigen");
-                Console.WriteLine("2. Hinzufuegen");
+                Console.WriteLine("2. Hinzufügen");
                 Console.WriteLine("3. Bearbeiten");
-                Console.WriteLine("4. Loeschen");
-                Console.WriteLine("5. Zurueck zum Hauptmenue");
+                Console.WriteLine("4. Löschen");
+                Console.WriteLine("5. Zurück zum Hauptmenü");
                 Console.Write("Option: ");
                 string? input = Console.ReadLine();
 
@@ -335,7 +339,7 @@ namespace MIACopilotApp
                         back = true;
                         break;
                     default:
-                        Console.WriteLine("Ungueltige Eingabe.");
+                        Console.WriteLine("Ungültige Eingabe.");
                         break;
                 }
             }
@@ -363,7 +367,7 @@ namespace MIACopilotApp
             string firstName = Console.ReadLine() ?? string.Empty;
             Console.Write("Nachname: ");
             string lastName = Console.ReadLine() ?? string.Empty;
-            int? companyId = ReadOptionalInt("Firma ID (leer fuer keine): ");
+            int? companyId = ReadOptionalInt("Firma ID (leer für keine): ");
 
             var trainer = new VocationalTrainer 
             { 
@@ -372,7 +376,7 @@ namespace MIACopilotApp
                 CompanyId = companyId 
             };
             VocationalTrainer.Create(trainer);
-            Console.WriteLine("Berufsbildner erfolgreich hinzugefuegt.");
+            Console.WriteLine("Berufsbildner erfolgreich hinzugefügt.");
         }
 
         // Updates an existing vocational trainer
@@ -404,9 +408,9 @@ namespace MIACopilotApp
         // Deletes a vocational trainer
         static void DeleteVocationalTrainer()
         {
-            int id = ReadInt("ID des zu loeschenden Berufsbildners: ");
+            int id = ReadInt("ID des zu Löschenden Berufsbildners: ");
             VocationalTrainer.Delete(id);
-            Console.WriteLine("Berufsbildner (falls vorhanden) geloescht.");
+            Console.WriteLine("Berufsbildner (falls vorhanden) gelöscht.");
         }
 
         // Manages the work journal operations (CRUD)
@@ -417,10 +421,10 @@ namespace MIACopilotApp
             {
                 Console.WriteLine("\n-- Arbeitsjournale verwalten --");
                 Console.WriteLine("1. Alle anzeigen");
-                Console.WriteLine("2. Hinzufuegen");
+                Console.WriteLine("2. Hinzufügen");
                 Console.WriteLine("3. Bearbeiten");
-                Console.WriteLine("4. Loeschen");
-                Console.WriteLine("5. Zurueck zum Hauptmenue");
+                Console.WriteLine("4. Löschen");
+                Console.WriteLine("5. Zurück zum Hauptmenü");
                 Console.Write("Option: ");
                 string? input = Console.ReadLine();
 
@@ -442,7 +446,7 @@ namespace MIACopilotApp
                         back = true;
                         break;
                     default:
-                        Console.WriteLine("Ungueltige Eingabe.");
+                        Console.WriteLine("Ungültige Eingabe.");
                         break;
                 }
             }
@@ -481,7 +485,7 @@ namespace MIACopilotApp
                 ApprenticeId = apprenticeId 
             };
             WorkJournal.Create(journal);
-            Console.WriteLine("Arbeitsjournal erfolgreich hinzugefuegt.");
+            Console.WriteLine("Arbeitsjournal erfolgreich hinzugefügt.");
         }
 
         // Updates an existing work journal
@@ -520,9 +524,93 @@ namespace MIACopilotApp
         // Deletes a work journal
         static void DeleteWorkJournal()
         {
-            int id = ReadInt("ID des zu loeschenden Arbeitsjournals: ");
+            int id = ReadInt("ID des zu Löschenden Arbeitsjournals: ");
             WorkJournal.Delete(id);
-            Console.WriteLine("Arbeitsjournal (falls vorhanden) geloescht.");
+            Console.WriteLine("Arbeitsjournal (falls vorhanden) gelöscht.");
+        }
+
+        // Manages search and filter operations
+        static void SearchAndFilter()
+        {
+            bool back = false;
+            while (!back)
+            {
+                Console.WriteLine("\n-- Suchen & Filtern --");
+                Console.WriteLine("1. Lernenden suchen (Name)");
+                Console.WriteLine("2. Lernende nach Firma filtern");
+                Console.WriteLine("3. Zurück zum Hauptmenü");
+                Console.Write("Option: ");
+                string? input = Console.ReadLine();
+
+                switch (input)
+                {
+                    case "1":
+                        SearchApprenticeByName();
+                        break;
+                    case "2":
+                        FilterApprenticeByCompany();
+                        break;
+                    case "3":
+                        back = true;
+                        break;
+                    default:
+                        Console.WriteLine("Ungültige Eingabe.");
+                        break;
+                }
+            }
+        }
+
+        // Searches for an apprentice by name
+        static void SearchApprenticeByName()
+        {
+            Console.Write("Bitte Suchbegriff (Vor- oder Nachname) eingeben: ");
+            string query = Console.ReadLine() ?? string.Empty;
+
+            if (string.IsNullOrWhiteSpace(query))
+            {
+                Console.WriteLine("Der Suchbegriff darf nicht leer sein.");
+                return;
+            }
+
+            var results = DataStore.Data.Apprentices
+                .Where(a => a.FirstName.Contains(query, StringComparison.OrdinalIgnoreCase) || 
+                            a.LastName.Contains(query, StringComparison.OrdinalIgnoreCase))
+                .ToList();
+
+            Console.WriteLine("\nSuchergebnisse:");
+            if (!results.Any())
+            {
+                Console.WriteLine("Keine Lernenden gefunden, die diesem Suchbegriff entsprechen.");
+                return;
+            }
+
+            foreach (var a in results)
+            {
+                Console.WriteLine($"ID: {a.Id} | Name: {a.FirstName} {a.LastName} | Firma ID: {(a.CompanyId.HasValue ? a.CompanyId.Value.ToString() : "Keine")} | Berufsbildner ID: {(a.VocationalTrainerId.HasValue ? a.VocationalTrainerId.Value.ToString() : "Keine")}");
+            }
+        }
+
+        // Filters apprentices by company
+        static void FilterApprenticeByCompany()
+        {
+            int companyId = ReadInt("Bitte die ID der Firma eingeben: ");
+
+            var results = DataStore.Data.Apprentices
+                .Where(a => a.CompanyId == companyId)
+                .ToList();
+
+            Console.WriteLine($"\nLernende, die der Firma {companyId} zugewiesen sind:");
+            if (!results.Any())
+            {
+                Console.WriteLine("Keine Lernenden für diese Firma gefunden.");
+                return;
+            }
+
+            foreach (var a in results)
+            {
+                Console.WriteLine($"ID: {a.Id} | Name: {a.FirstName} {a.LastName} | Firma ID: {a.CompanyId} | Berufsbildner ID: {(a.VocationalTrainerId.HasValue ? a.VocationalTrainerId.Value.ToString() : "Keine")}");
+            }
         }
     }
 }
+
