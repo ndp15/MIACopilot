@@ -6,7 +6,10 @@ namespace MIACopilotApp
 {
     class Program
     {
+        private static System.Windows.Application? _wpfApp;
+
         // Entry point for the console application
+        [STAThread]
         static void Main(string[] args)
         {
             DataStore.LoadData();
@@ -21,7 +24,9 @@ namespace MIACopilotApp
                 Console.WriteLine("4. Arbeitsjournale verwalten");
                 Console.WriteLine("5. Beenden");
                 Console.WriteLine("6. Suchen & Filtern");
-                Console.Write("Bitte wählen Sie eine Option (1-6): ");
+                Console.WriteLine("7. GUI öffnen");
+                Console.WriteLine("8. Noten verwalten");
+                Console.Write("Bitte wählen Sie eine Option (1-8): ");
 
                 string? input = Console.ReadLine();
 
@@ -46,11 +51,31 @@ namespace MIACopilotApp
                     case "6":
                         SearchAndFilter();
                         break;
+                    case "7":
+                        LaunchGui();
+                        break;
+                    case "8":
+                        ManageGrades();
+                        break;
                     default:
                         Console.WriteLine("Ungültige Eingabe. Bitte versuchen Sie es erneut.");
                         break;
                 }
             }
+        }
+
+        // Opens the WPF GUI and reloads data after closing it
+        static void LaunchGui()
+        {
+            if (System.Windows.Application.Current == null)
+            {
+                _wpfApp = new System.Windows.Application();
+                _wpfApp.ShutdownMode = System.Windows.ShutdownMode.OnExplicitShutdown;
+            }
+            Console.WriteLine("GUI wird geöffnet...");
+            new MIACopilotApp.Gui.MainWindow().ShowDialog();
+            DataStore.LoadData();
+            Console.WriteLine("GUI geschlossen. Daten wurden neu geladen.");
         }
 
         // Helper method to read an integer from console to avoid crashes
@@ -610,6 +635,124 @@ namespace MIACopilotApp
             {
                 Console.WriteLine($"ID: {a.Id} | Name: {a.FirstName} {a.LastName} | Firma ID: {a.CompanyId} | Berufsbildner ID: {(a.VocationalTrainerId.HasValue ? a.VocationalTrainerId.Value.ToString() : "Keine")}");
             }
+        }
+
+        // Manages grade operations (CRUD)
+        static void ManageGrades()
+        {
+            bool back = false;
+            while (!back)
+            {
+                Console.WriteLine("\n-- Noten verwalten --");
+                Console.WriteLine("1. Alle anzeigen");
+                Console.WriteLine("2. Note hinzufügen");
+                Console.WriteLine("3. Note bearbeiten");
+                Console.WriteLine("4. Note löschen");
+                Console.WriteLine("5. Zurück zum Hauptmenü");
+                Console.Write("Option: ");
+                string? input = Console.ReadLine();
+
+                switch (input)
+                {
+                    case "1": ReadGrades();   break;
+                    case "2": CreateGrade();  break;
+                    case "3": UpdateGrade();  break;
+                    case "4": DeleteGrade();  break;
+                    case "5": back = true;    break;
+                    default: Console.WriteLine("Ungültige Eingabe."); break;
+                }
+            }
+        }
+
+        // Displays all grades with apprentice names
+        static void ReadGrades()
+        {
+            Console.WriteLine("\nAlle Noten:");
+            if (!DataStore.Data.Grades.Any())
+            {
+                Console.WriteLine("Keine Noten gefunden.");
+                return;
+            }
+            foreach (var g in DataStore.Data.Grades)
+            {
+                var a = DataStore.Data.Apprentices.FirstOrDefault(x => x.Id == g.ApprenticeId);
+                string name = a != null ? $"{a.FirstName} {a.LastName}" : $"ID {g.ApprenticeId}";
+                Console.WriteLine($"ID: {g.Id} | Fach: {g.Subject} | Note: {g.Value:F1} | Lernender: {name} | Datum: {g.Date:dd.MM.yyyy}{(string.IsNullOrEmpty(g.Remarks) ? "" : $" | Bemerkung: {g.Remarks}")}");
+            }
+        }
+
+        // Creates a new grade
+        static void CreateGrade()
+        {
+            Console.Write("Fach: ");
+            string subject = Console.ReadLine() ?? string.Empty;
+
+            double value;
+            while (true)
+            {
+                Console.Write("Note (1.0 – 6.0): ");
+                string? input = Console.ReadLine();
+                if (double.TryParse(input, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out value) &&
+                    value >= 1.0 && value <= 6.0) break;
+                Console.WriteLine("Ungültige Note. Bitte einen Wert zwischen 1.0 und 6.0 eingeben.");
+            }
+
+            int apprenticeId = ReadInt("Lernender ID: ");
+            DateTime date    = ReadDate("Datum (z.B. 2026-03-25): ");
+            Console.Write("Bemerkungen (optional, Enter für keine): ");
+            string? remarks = Console.ReadLine();
+
+            var grade = new MIACopilotApp.Models.Grade
+            {
+                Subject      = subject,
+                Value        = value,
+                ApprenticeId = apprenticeId,
+                Date         = date,
+                Remarks      = string.IsNullOrWhiteSpace(remarks) ? null : remarks
+            };
+            MIACopilotApp.Models.Grade.Create(grade);
+            Console.WriteLine("Note erfolgreich hinzugefügt.");
+        }
+
+        // Updates an existing grade
+        static void UpdateGrade()
+        {
+            int id = ReadInt("ID der zu bearbeitenden Note: ");
+            var grade = MIACopilotApp.Models.Grade.Read(id);
+            if (grade == null) { Console.WriteLine("Note nicht gefunden."); return; }
+
+            Console.Write($"Neues Fach (aktuell: {grade.Subject}): ");
+            string subject = Console.ReadLine() ?? string.Empty;
+            if (!string.IsNullOrWhiteSpace(subject)) grade.Subject = subject;
+
+            Console.Write($"Neue Note (aktuell: {grade.Value:F1}, leer lassen zum Beibehalten): ");
+            string? valInput = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(valInput) &&
+                double.TryParse(valInput, System.Globalization.NumberStyles.Any,
+                    System.Globalization.CultureInfo.InvariantCulture, out double newVal) &&
+                newVal >= 1.0 && newVal <= 6.0)
+                grade.Value = newVal;
+
+            Console.Write($"Neues Datum (aktuell: {grade.Date:dd.MM.yyyy}, leer lassen zum Beibehalten): ");
+            string? dateInput = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(dateInput) && DateTime.TryParse(dateInput, out DateTime newDate))
+                grade.Date = newDate;
+
+            Console.Write($"Neue Bemerkung (aktuell: {grade.Remarks ?? "keine"}): ");
+            string? remarks = Console.ReadLine();
+            if (!string.IsNullOrWhiteSpace(remarks)) grade.Remarks = remarks;
+
+            MIACopilotApp.Models.Grade.Update(grade);
+            Console.WriteLine("Note erfolgreich aktualisiert.");
+        }
+
+        // Deletes a grade
+        static void DeleteGrade()
+        {
+            int id = ReadInt("ID der zu löschenden Note: ");
+            MIACopilotApp.Models.Grade.Delete(id);
+            Console.WriteLine("Note (falls vorhanden) gelöscht.");
         }
     }
 }
