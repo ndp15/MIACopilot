@@ -17,15 +17,22 @@ namespace MIACopilotApp
 
             while (running)
             {
-                Console.WriteLine("\n--- Lernenden-Management-System ---");
+                Console.Clear();
+                PrintConsoleTitle("LMS");
+                Console.WriteLine(new string('=', 58));
                 Console.WriteLine("1. Lernende verwalten");
                 Console.WriteLine("2. Firmen verwalten");
                 Console.WriteLine("3. Berufsbildner verwalten");
                 Console.WriteLine("4. Arbeitsjournale verwalten");
-                Console.WriteLine("5. Beenden");
+                Console.WriteLine("5. Noten verwalten");
                 Console.WriteLine("6. Suchen & Filtern");
+                
+                var prevColor = Console.ForegroundColor;
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine("7. GUI öffnen");
-                Console.WriteLine("8. Noten verwalten");
+                Console.ForegroundColor = prevColor;
+                
+                Console.WriteLine("8. Beenden");
                 Console.Write("Bitte wählen Sie eine Option (1-8): ");
 
                 string? input = Console.ReadLine();
@@ -45,8 +52,7 @@ namespace MIACopilotApp
                         ManageWorkJournals();
                         break;
                     case "5":
-                        running = false;
-                        Console.WriteLine("Programm wird beendet.");
+                        ManageGrades();
                         break;
                     case "6":
                         SearchAndFilter();
@@ -55,13 +61,60 @@ namespace MIACopilotApp
                         LaunchGui();
                         break;
                     case "8":
-                        ManageGrades();
+                        running = false;
+                        Console.WriteLine("Programm wird beendet.");
                         break;
                     default:
                         Console.WriteLine("Ungültige Eingabe. Bitte versuchen Sie es erneut.");
                         break;
                 }
             }
+        }
+
+        // Prints a pixel-like ASCII title with a 3D shadow block effect
+        static void PrintConsoleTitle(string title)
+        {
+            var previousColor = Console.ForegroundColor;
+            Console.WriteLine();
+
+            string[] lernenden = {
+                @"  ██╗     ███████╗██████╗ ███╗   ██╗███████╗███╗   ██╗██████╗ ███████╗███╗   ██╗",
+                @"  ██║     ██╔════╝██╔══██╗████╗  ██║██╔════╝████╗  ██║██╔══██╗██╔════╝████╗  ██║",
+                @"  ██║     █████╗  ██████╔╝██╔██╗ ██║█████╗  ██╔██╗ ██║██║  ██║█████╗  ██╔██╗ ██║",
+                @"  ██║     ██╔══╝  ██╔══██╗██║╚██╗██║██╔══╝  ██║╚██╗██║██║  ██║██╔══╝  ██║╚██╗██║",
+                @"  ███████╗███████╗██║  ██║██║ ╚████║███████╗██║ ╚████║██████╔╝███████╗██║ ╚████║",
+                @"  ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═══╝╚══════╝╚═╝  ╚═══╝╚═════╝ ╚══════╝╚═╝  ╚═══╝"
+            };
+
+            string[] management = {
+                @"    ███╗   ███╗ █████╗ ███╗   ██╗ █████╗  ██████╗ ███████╗███╗   ███╗███████╗███╗   ██╗████████╗",
+                @"    ████╗ ████║██╔══██╗████╗  ██║██╔══██╗██╔════╝ ██╔════╝████╗ ████║██╔════╝████╗  ██║╚══██╔══╝",
+                @"    ██╔████╔██║███████║██╔██╗ ██║███████║██║  ███╗█████╗  ██╔████╔██║█████╗  ██╔██╗ ██║   ██║   ",
+                @"    ██║╚██╔╝██║██╔══██║██║╚██╗██║██╔══██║██║   ██║██╔══╝  ██║╚██╔╝██║██╔══╝  ██║╚██╗██║   ██║   ",
+                @"    ██║ ╚═╝ ██║██║  ██║██║ ╚████║██║  ██║╚██████╔╝███████╗██║ ╚═╝ ██║███████╗██║ ╚████║   ██║   ",
+                @"    ╚═╝     ╚═╝╚═╝  ╚═╝╚═╝  ╚═══╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝     ╚═╝╚══════╝╚═╝  ╚═══╝   ╚═╝   "
+            };
+
+            string[] system = {
+                @"      ██████╗ ██╗   ██╗ ██████╗ ████████╗███████╗███╗   ███╗",
+                @"     ██╔════╝ ╚██╗ ██╔╝██╔════╝ ╚══██╔══╝██╔════╝████╗ ████║",
+                @"     ╚█████╗   ╚████╔╝ ╚█████╗     ██║   █████╗  ██╔████╔██║",
+                @"      ╚═══██╗   ╚██╔╝   ╚═══██╗    ██║   ██╔══╝  ██║╚██╔╝██║",
+                @"     ██████╔╝    ██║   ██████╔╝    ██║   ███████╗██║ ╚═╝ ██║",
+                @"     ╚═════╝     ╚═╝   ╚═════╝     ╚═╝   ╚══════╝╚═╝     ╚═╝"
+            };
+
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            foreach (var line in lernenden) Console.WriteLine(line);
+            
+            Console.ForegroundColor = ConsoleColor.DarkCyan;
+            foreach (var line in management) Console.WriteLine(line);
+            
+            Console.ForegroundColor = ConsoleColor.Blue;
+            foreach (var line in system) Console.WriteLine(line);
+
+            Console.ForegroundColor = previousColor;
+            Console.WriteLine();
         }
 
         // Opens the WPF GUI and reloads data after closing it
