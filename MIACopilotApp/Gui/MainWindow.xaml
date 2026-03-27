@@ -239,24 +239,29 @@
                             <TextBlock Text="Lernende" FontSize="20" FontWeight="Bold" Foreground="#1A2B4A"/>
                             <TextBlock x:Name="TxtApprenticeCount" FontSize="12" Foreground="#6B7A9B" Margin="0,2,0,0"/>
                         </StackPanel>
-                        <Grid Grid.Column="1" VerticalAlignment="Center">
-                            <TextBox x:Name="TbApprenticeSearch" Width="240" Height="36"
-                                     Padding="12,8" FontSize="13" BorderBrush="#CBD5E0"
-                                     TextChanged="TbApprenticeSearch_TextChanged"/>
-                            <TextBlock Text="Suchen..." Foreground="#A0AEC0" Margin="14,0"
-                                       VerticalAlignment="Center" IsHitTestVisible="False" FontSize="13">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=TbApprenticeSearch}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox x:Name="CbApprenticePersonFilter" Width="200" Height="36"
+                                      Margin="0,0,8,0" FontSize="13" VerticalContentAlignment="Center"
+                                      SelectionChanged="CbApprenticePersonFilter_SelectionChanged"/>
+                            <Grid>
+                                <TextBox x:Name="TbApprenticeSearch" Width="240" Height="36"
+                                         Padding="12,8" FontSize="13" BorderBrush="#CBD5E0"
+                                         TextChanged="TbApprenticeSearch_TextChanged"/>
+                                <TextBlock Text="Suchen..." Foreground="#A0AEC0" Margin="14,0"
+                                           VerticalAlignment="Center" IsHitTestVisible="False" FontSize="13">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=TbApprenticeSearch}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
@@ -375,24 +380,29 @@
                             <TextBlock Text="Berufsbildner" FontSize="20" FontWeight="Bold" Foreground="#1A2B4A"/>
                             <TextBlock x:Name="TxtTrainerCount" FontSize="12" Foreground="#6B7A9B" Margin="0,2,0,0"/>
                         </StackPanel>
-                        <Grid Grid.Column="1" VerticalAlignment="Center">
-                            <TextBox x:Name="TbTrainerSearch" Width="240" Height="36"
-                                     Padding="12,8" FontSize="13" BorderBrush="#CBD5E0"
-                                     TextChanged="TbTrainerSearch_TextChanged"/>
-                            <TextBlock Text="Suchen..." Foreground="#A0AEC0" Margin="14,0"
-                                       VerticalAlignment="Center" IsHitTestVisible="False" FontSize="13">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=TbTrainerSearch}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox x:Name="CbTrainerPersonFilter" Width="200" Height="36"
+                                      Margin="0,0,8,0" FontSize="13" VerticalContentAlignment="Center"
+                                      SelectionChanged="CbTrainerPersonFilter_SelectionChanged"/>
+                            <Grid>
+                                <TextBox x:Name="TbTrainerSearch" Width="240" Height="36"
+                                         Padding="12,8" FontSize="13" BorderBrush="#CBD5E0"
+                                         TextChanged="TbTrainerSearch_TextChanged"/>
+                                <TextBlock Text="Suchen..." Foreground="#A0AEC0" Margin="14,0"
+                                           VerticalAlignment="Center" IsHitTestVisible="False" FontSize="13">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=TbTrainerSearch}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
@@ -443,24 +453,29 @@
                             <TextBlock Text="Arbeitsjournale" FontSize="20" FontWeight="Bold" Foreground="#1A2B4A"/>
                             <TextBlock x:Name="TxtJournalCount" FontSize="12" Foreground="#6B7A9B" Margin="0,2,0,0"/>
                         </StackPanel>
-                        <Grid Grid.Column="1" VerticalAlignment="Center">
-                            <TextBox x:Name="TbJournalSearch" Width="240" Height="36"
-                                     Padding="12,8" FontSize="13" BorderBrush="#CBD5E0"
-                                     TextChanged="TbJournalSearch_TextChanged"/>
-                            <TextBlock Text="Suchen..." Foreground="#A0AEC0" Margin="14,0"
-                                       VerticalAlignment="Center" IsHitTestVisible="False" FontSize="13">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=TbJournalSearch}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox x:Name="CbJournalPersonFilter" Width="200" Height="36"
+                                      Margin="0,0,8,0" FontSize="13" VerticalContentAlignment="Center"
+                                      SelectionChanged="CbJournalPersonFilter_SelectionChanged"/>
+                            <Grid>
+                                <TextBox x:Name="TbJournalSearch" Width="240" Height="36"
+                                         Padding="12,8" FontSize="13" BorderBrush="#CBD5E0"
+                                         TextChanged="TbJournalSearch_TextChanged"/>
+                                <TextBlock Text="Suchen..." Foreground="#A0AEC0" Margin="14,0"
+                                           VerticalAlignment="Center" IsHitTestVisible="False" FontSize="13">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=TbJournalSearch}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
@@ -512,24 +527,29 @@
                             <TextBlock Text="Noten" FontSize="20" FontWeight="Bold" Foreground="#1A2B4A"/>
                             <TextBlock x:Name="TxtGradeCount" FontSize="12" Foreground="#6B7A9B" Margin="0,2,0,0"/>
                         </StackPanel>
-                        <Grid Grid.Column="1" VerticalAlignment="Center">
-                            <TextBox x:Name="TbGradeSearch" Width="240" Height="36"
-                                     Padding="12,8" FontSize="13" BorderBrush="#CBD5E0"
-                                     TextChanged="TbGradeSearch_TextChanged"/>
-                            <TextBlock Text="Suchen..." Foreground="#A0AEC0" Margin="14,0"
-                                       VerticalAlignment="Center" IsHitTestVisible="False" FontSize="13">
-                                <TextBlock.Style>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="Visibility" Value="Collapsed"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Text, ElementName=TbGradeSearch}" Value="">
-                                                <Setter Property="Visibility" Value="Visible"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </TextBlock.Style>
-                            </TextBlock>
-                        </Grid>
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                            <ComboBox x:Name="CbGradePersonFilter" Width="200" Height="36"
+                                      Margin="0,0,8,0" FontSize="13" VerticalContentAlignment="Center"
+                                      SelectionChanged="CbGradePersonFilter_SelectionChanged"/>
+                            <Grid>
+                                <TextBox x:Name="TbGradeSearch" Width="240" Height="36"
+                                         Padding="12,8" FontSize="13" BorderBrush="#CBD5E0"
+                                         TextChanged="TbGradeSearch_TextChanged"/>
+                                <TextBlock Text="Suchen..." Foreground="#A0AEC0" Margin="14,0"
+                                           VerticalAlignment="Center" IsHitTestVisible="False" FontSize="13">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Visibility" Value="Collapsed"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Text, ElementName=TbGradeSearch}" Value="">
+                                                    <Setter Property="Visibility" Value="Visible"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                </TextBlock>
+                            </Grid>
+                        </StackPanel>
                     </Grid>
                 </Border>
 
@@ -555,11 +575,15 @@
 
                 <Border Grid.Row="2" Background="White" Padding="16,10"
                         BorderBrush="#E2E8F0" BorderThickness="0,1,0,0">
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <Button Content="+ Hinzufügen" Style="{StaticResource BtnPrimary}"   Click="BtnAddGrade_Click"    Margin="0,0,8,0"/>
-                        <Button x:Name="BtnEditGrade"   Content="Bearbeiten" Style="{StaticResource BtnSecondary}" IsEnabled="False" Click="BtnEditGrade_Click"   Margin="0,0,8,0"/>
-                        <Button x:Name="BtnDeleteGrade" Content="Löschen"   Style="{StaticResource BtnDanger}"    IsEnabled="False" Click="BtnDeleteGrade_Click"/>
-                    </StackPanel>
+                    <Grid>
+                        <TextBlock x:Name="TxtGradeAverage" VerticalAlignment="Center"
+                                   FontSize="13" FontWeight="SemiBold" Foreground="#1A2B4A"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Content="+ Hinzufügen" Style="{StaticResource BtnPrimary}"   Click="BtnAddGrade_Click"    Margin="0,0,8,0"/>
+                            <Button x:Name="BtnEditGrade"   Content="Bearbeiten" Style="{StaticResource BtnSecondary}" IsEnabled="False" Click="BtnEditGrade_Click"   Margin="0,0,8,0"/>
+                            <Button x:Name="BtnDeleteGrade" Content="Löschen"   Style="{StaticResource BtnDanger}"    IsEnabled="False" Click="BtnDeleteGrade_Click"/>
+                        </StackPanel>
+                    </Grid>
                 </Border>
             </Grid>
 

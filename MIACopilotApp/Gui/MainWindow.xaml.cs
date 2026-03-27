@@ -101,10 +101,76 @@ namespace MIACopilotApp.Gui
             }
         }
 
+        private class PersonFilterItem(string label, string role = "Alle", int id = 0)
+        {
+            public string Label { get; } = label;
+            public string Role  { get; } = role;  // "Alle", "Lernender", "Berufsbildner"
+            public int    Id    { get; } = id;
+            public override string ToString() => Label;
+        }
+
+        // Populates a person-filter ComboBox with "Alle", apprentices, and/or trainers
+        private static void PopulatePersonFilter(ComboBox cb, bool includeLernende, bool includeBerufsbildner)
+        {
+            var prev = cb.SelectedItem as PersonFilterItem;
+            cb.Items.Clear();
+            cb.Items.Add(new PersonFilterItem("Alle"));
+
+            if (includeLernende)
+            {
+                var apprentices = DataStore.Data.Apprentices;
+                if (apprentices.Count > 0)
+                {
+                    cb.Items.Add(new ComboBoxItem
+                    {
+                        Content = "Lernende", IsEnabled = false,
+                        Foreground = System.Windows.Media.Brushes.Gray,
+                        FontSize = 11, FontWeight = FontWeights.SemiBold,
+                        Padding = new Thickness(8, 4, 8, 2)
+                    });
+                    foreach (var a in apprentices)
+                        cb.Items.Add(new PersonFilterItem($"  {a.FirstName} {a.LastName}", "Lernender", a.Id));
+                }
+            }
+
+            if (includeBerufsbildner)
+            {
+                var trainers = DataStore.Data.VocationalTrainers;
+                if (trainers.Count > 0)
+                {
+                    cb.Items.Add(new ComboBoxItem
+                    {
+                        Content = "Berufsbildner", IsEnabled = false,
+                        Foreground = System.Windows.Media.Brushes.Gray,
+                        FontSize = 11, FontWeight = FontWeights.SemiBold,
+                        Padding = new Thickness(8, 4, 8, 2)
+                    });
+                    foreach (var t in trainers)
+                        cb.Items.Add(new PersonFilterItem($"  {t.FirstName} {t.LastName}", "Berufsbildner", t.Id));
+                }
+            }
+
+            // Restore previous selection if still valid
+            if (prev != null && prev.Role != "Alle")
+            {
+                var match = cb.Items.OfType<PersonFilterItem>()
+                    .FirstOrDefault(p => p.Role == prev.Role && p.Id == prev.Id);
+                cb.SelectedItem = match ?? cb.Items[0];
+            }
+            else
+            {
+                cb.SelectedIndex = 0;
+            }
+        }
+
         // Initializes the main window and loads all data grids
         public MainWindow()
         {
             InitializeComponent();
+            PopulatePersonFilter(CbApprenticePersonFilter, includeLernende: false, includeBerufsbildner: true);
+            PopulatePersonFilter(CbTrainerPersonFilter,   includeLernende: true,  includeBerufsbildner: false);
+            PopulatePersonFilter(CbJournalPersonFilter,   includeLernende: true,  includeBerufsbildner: true);
+            PopulatePersonFilter(CbGradePersonFilter,     includeLernende: true,  includeBerufsbildner: true);
             RefreshAll();
         }
 
@@ -141,12 +207,20 @@ namespace MIACopilotApp.Gui
         }
 
         private string _apprenticeFilter = "";
+        private PersonFilterItem? _apprenticePersonFilter;
 
-        // Refreshes the apprentices grid using the active search filter
+        // Refreshes the apprentices grid using the active search and person filters
         private void RefreshApprentices()
         {
-            var all   = DataStore.Data.Apprentices;
-            var items = all
+            var all = DataStore.Data.Apprentices;
+            IEnumerable<Apprentice> filtered = all;
+
+            if (_apprenticePersonFilter?.Role == "Berufsbildner")
+                filtered = filtered.Where(a => a.VocationalTrainerId == _apprenticePersonFilter.Id);
+            else if (_apprenticePersonFilter?.Role == "Lernender")
+                filtered = filtered.Where(a => a.Id == _apprenticePersonFilter.Id);
+
+            var items = filtered
                 .Where(a => string.IsNullOrEmpty(_apprenticeFilter) ||
                             a.FirstName.Contains(_apprenticeFilter, StringComparison.OrdinalIgnoreCase) ||
                             a.LastName .Contains(_apprenticeFilter, StringComparison.OrdinalIgnoreCase))
@@ -160,6 +234,13 @@ namespace MIACopilotApp.Gui
 
             BtnEditApprentice  .IsEnabled = false;
             BtnDeleteApprentice.IsEnabled = false;
+        }
+
+        // Applies person filter and refreshes the apprentices grid
+        private void CbApprenticePersonFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _apprenticePersonFilter = CbApprenticePersonFilter.SelectedItem as PersonFilterItem;
+            RefreshApprentices();
         }
 
         // Applies apprentice search text and refreshes the grid
@@ -286,12 +367,24 @@ namespace MIACopilotApp.Gui
         }
 
         private string _trainerFilter = "";
+        private PersonFilterItem? _trainerPersonFilter;
 
-        // Refreshes the trainers grid using the active search filter
+        // Refreshes the trainers grid using the active search and person filters
         private void RefreshTrainers()
         {
-            var all   = DataStore.Data.VocationalTrainers;
-            var items = all
+            var all = DataStore.Data.VocationalTrainers;
+            IEnumerable<VocationalTrainer> filtered = all;
+
+            if (_trainerPersonFilter?.Role == "Lernender")
+            {
+                var apprentice = DataStore.Data.Apprentices.FirstOrDefault(a => a.Id == _trainerPersonFilter.Id);
+                if (apprentice?.VocationalTrainerId.HasValue == true)
+                    filtered = filtered.Where(t => t.Id == apprentice.VocationalTrainerId);
+                else
+                    filtered = Enumerable.Empty<VocationalTrainer>();
+            }
+
+            var items = filtered
                 .Where(t => string.IsNullOrEmpty(_trainerFilter) ||
                             t.FirstName.Contains(_trainerFilter, StringComparison.OrdinalIgnoreCase) ||
                             t.LastName .Contains(_trainerFilter, StringComparison.OrdinalIgnoreCase))
@@ -305,6 +398,13 @@ namespace MIACopilotApp.Gui
 
             BtnEditTrainer  .IsEnabled = false;
             BtnDeleteTrainer.IsEnabled = false;
+        }
+
+        // Applies person filter and refreshes the trainers grid
+        private void CbTrainerPersonFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _trainerPersonFilter = CbTrainerPersonFilter.SelectedItem as PersonFilterItem;
+            RefreshTrainers();
         }
 
         // Applies trainer search text and refreshes the grid
@@ -360,12 +460,25 @@ namespace MIACopilotApp.Gui
         }
 
         private string _journalFilter = "";
+        private PersonFilterItem? _journalPersonFilter;
 
-        // Refreshes the journals grid using the active search filter
+        // Refreshes the journals grid using the active search and person filters
         private void RefreshJournals()
         {
-            var all   = DataStore.Data.WorkJournals;
-            var items = all
+            var all = DataStore.Data.WorkJournals;
+            IEnumerable<WorkJournal> filtered = all;
+
+            if (_journalPersonFilter?.Role == "Lernender")
+                filtered = filtered.Where(j => j.ApprenticeId == _journalPersonFilter.Id);
+            else if (_journalPersonFilter?.Role == "Berufsbildner")
+            {
+                var ids = DataStore.Data.Apprentices
+                    .Where(a => a.VocationalTrainerId == _journalPersonFilter.Id)
+                    .Select(a => a.Id).ToHashSet();
+                filtered = filtered.Where(j => ids.Contains(j.ApprenticeId));
+            }
+
+            var items = filtered
                 .Where(j => string.IsNullOrEmpty(_journalFilter) ||
                             j.Title  .Contains(_journalFilter, StringComparison.OrdinalIgnoreCase) ||
                             (j.Content ?? "").Contains(_journalFilter, StringComparison.OrdinalIgnoreCase))
@@ -379,6 +492,13 @@ namespace MIACopilotApp.Gui
 
             BtnEditJournal  .IsEnabled = false;
             BtnDeleteJournal.IsEnabled = false;
+        }
+
+        // Applies person filter and refreshes the journals grid
+        private void CbJournalPersonFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _journalPersonFilter = CbJournalPersonFilter.SelectedItem as PersonFilterItem;
+            RefreshJournals();
         }
 
         // Applies journal search text and refreshes the grid
@@ -434,12 +554,25 @@ namespace MIACopilotApp.Gui
         }
 
         private string _gradeFilter = "";
+        private PersonFilterItem? _gradePersonFilter;
 
-        // Refreshes the grades grid using the active search filter
+        // Refreshes the grades grid using the active search and person filters; updates average
         private void RefreshGrades()
         {
-            var all   = DataStore.Data.Grades;
-            var items = all
+            var all = DataStore.Data.Grades;
+            IEnumerable<Grade> filtered = all;
+
+            if (_gradePersonFilter?.Role == "Lernender")
+                filtered = filtered.Where(g => g.ApprenticeId == _gradePersonFilter.Id);
+            else if (_gradePersonFilter?.Role == "Berufsbildner")
+            {
+                var ids = DataStore.Data.Apprentices
+                    .Where(a => a.VocationalTrainerId == _gradePersonFilter.Id)
+                    .Select(a => a.Id).ToHashSet();
+                filtered = filtered.Where(g => ids.Contains(g.ApprenticeId));
+            }
+
+            var items = filtered
                 .Where(g => string.IsNullOrEmpty(_gradeFilter) ||
                             g.Subject.Contains(_gradeFilter, StringComparison.OrdinalIgnoreCase) ||
                             (g.Remarks ?? "").Contains(_gradeFilter, StringComparison.OrdinalIgnoreCase))
@@ -451,8 +584,19 @@ namespace MIACopilotApp.Gui
                 ? $"{all.Count} Einträge"
                 : $"{items.Count} von {all.Count} Einträgen";
 
+            TxtGradeAverage.Text = items.Count > 0
+                ? $"Ø  {items.Average(g => g.Value):F2}"
+                : "";
+
             BtnEditGrade  .IsEnabled = false;
             BtnDeleteGrade.IsEnabled = false;
+        }
+
+        // Applies person filter and refreshes the grades grid
+        private void CbGradePersonFilter_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _gradePersonFilter = CbGradePersonFilter.SelectedItem as PersonFilterItem;
+            RefreshGrades();
         }
 
         // Applies grade search text and refreshes the grid

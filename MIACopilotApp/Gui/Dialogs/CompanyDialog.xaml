@@ -2,9 +2,9 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Firma hinzufügen"
-        Height="270" Width="480"
+        Height="340" Width="540"
         WindowStartupLocation="CenterOwner"
-        ResizeMode="NoResize" ShowInTaskbar="False"
+        ResizeMode="CanResize" ShowInTaskbar="False"
         FontFamily="Segoe UI" Background="White">
 
     <Window.Resources>
